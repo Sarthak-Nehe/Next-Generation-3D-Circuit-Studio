@@ -1,0 +1,180 @@
+[
+  {
+    "key": "smart-irrigation-system",
+    "matchNames": ["smart irrigation system", "irrigation system", "smart irrigation", "automatic irrigation"],
+    "matchKeywords": ["irrigation", "watering", "sprinkler"],
+    "displayName": "Smart Irrigation System",
+    "description": "Automatically waters plants based on soil moisture readings using a pump controlled through a relay.",
+    "components": [
+      { "id": "esp32-devkit", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0, "z": 0 } },
+      { "id": "soil-moisture-sensor", "quantity": 1, "recommended": true, "layout": { "x": -2.2, "y": 0, "z": -1.5 } },
+      { "id": "relay-1ch", "quantity": 1, "recommended": true, "layout": { "x": 1.8, "y": 0, "z": -1.2 } },
+      { "id": "dc-pump-12v", "quantity": 1, "recommended": true, "layout": { "x": 3.2, "y": 0, "z": 0.6 } },
+      { "id": "power-supply-12v", "quantity": 1, "recommended": true, "layout": { "x": 2.6, "y": 0, "z": 2.2 } },
+      { "id": "breadboard", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": -0.05, "z": 1.6 } },
+      { "id": "jumper-wires", "quantity": 1, "recommended": true, "layout": { "x": -2.8, "y": 0, "z": 2.2 } },
+      { "id": "rain-sensor", "quantity": 1, "recommended": false, "layout": { "x": -2.8, "y": 0, "z": -0.2 } },
+      { "id": "oled-display", "quantity": 1, "recommended": false, "layout": { "x": -1, "y": 0, "z": -2.4 } },
+      { "id": "wifi-esp8266", "quantity": 1, "recommended": false, "layout": { "x": 1, "y": 0, "z": -2.4 } }
+    ],
+    "connections": [
+      { "from": "soil-moisture-sensor", "fromPin": "AO", "to": "esp32-devkit", "toPin": "GPIO4" },
+      { "from": "esp32-devkit", "fromPin": "GPIO18", "to": "relay-1ch", "toPin": "IN" },
+      { "from": "relay-1ch", "fromPin": "NO", "to": "dc-pump-12v", "toPin": "+" },
+      { "from": "power-supply-12v", "fromPin": "+", "to": "relay-1ch", "toPin": "COM" }
+    ]
+  },
+  {
+    "key": "home-automation",
+    "matchNames": ["home automation", "smart home", "home automation system"],
+    "matchKeywords": ["home automation", "smart home", "domotics"],
+    "displayName": "Home Automation",
+    "description": "Controls home appliances remotely using relays switched by a Wi-Fi enabled microcontroller.",
+    "components": [
+      { "id": "esp32-devkit", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0, "z": 0 } },
+      { "id": "relay-2ch", "quantity": 2, "recommended": true, "layout": { "x": 2, "y": 0, "z": -1 } },
+      { "id": "push-button", "quantity": 2, "recommended": true, "layout": { "x": -2, "y": 0, "z": -1 } },
+      { "id": "pir-motion-sensor", "quantity": 1, "recommended": false, "layout": { "x": -2.6, "y": 0, "z": 1 } },
+      { "id": "oled-display", "quantity": 1, "recommended": false, "layout": { "x": 0, "y": 0, "z": -2.2 } },
+      { "id": "breadboard", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": -0.05, "z": 1.6 } },
+      { "id": "jumper-wires", "quantity": 1, "recommended": true, "layout": { "x": -3, "y": 0, "z": 2 } },
+      { "id": "power-supply-12v", "quantity": 1, "recommended": true, "layout": { "x": 3, "y": 0, "z": 2 } }
+    ],
+    "connections": [
+      { "from": "esp32-devkit", "fromPin": "GPIO18", "to": "relay-2ch", "toPin": "IN1" },
+      { "from": "esp32-devkit", "fromPin": "GPIO19", "to": "relay-2ch", "toPin": "IN2" },
+      { "from": "push-button", "fromPin": "1", "to": "esp32-devkit", "toPin": "GPIO21" }
+    ]
+  },
+  {
+    "key": "weather-monitoring-system",
+    "matchNames": ["weather monitoring system", "weather station", "weather monitoring"],
+    "matchKeywords": ["weather", "climate station"],
+    "displayName": "Weather Monitoring System",
+    "description": "Collects temperature, humidity and pressure data and reports it over Wi-Fi.",
+    "components": [
+      { "id": "esp32-devkit", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0, "z": 0 } },
+      { "id": "dht22", "quantity": 1, "recommended": true, "layout": { "x": -2, "y": 0, "z": -1.4 } },
+      { "id": "bmp280", "quantity": 1, "recommended": true, "layout": { "x": -2, "y": 0, "z": 1 } },
+      { "id": "rain-sensor", "quantity": 1, "recommended": false, "layout": { "x": 2, "y": 0, "z": -1.4 } },
+      { "id": "oled-display", "quantity": 1, "recommended": true, "layout": { "x": 2, "y": 0, "z": 1 } },
+      { "id": "breadboard", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": -0.05, "z": 1.6 } },
+      { "id": "jumper-wires", "quantity": 1, "recommended": true, "layout": { "x": -3, "y": 0, "z": 2 } },
+      { "id": "solar-panel", "quantity": 1, "recommended": false, "layout": { "x": 3, "y": 0, "z": 2.2 } }
+    ],
+    "connections": [
+      { "from": "dht22", "fromPin": "DATA", "to": "esp32-devkit", "toPin": "GPIO4" },
+      { "from": "bmp280", "fromPin": "SDA", "to": "esp32-devkit", "toPin": "GPIO21" },
+      { "from": "bmp280", "fromPin": "SCL", "to": "esp32-devkit", "toPin": "GPIO22" },
+      { "from": "oled-display", "fromPin": "SDA", "to": "esp32-devkit", "toPin": "GPIO21" }
+    ]
+  },
+  {
+    "key": "line-following-robot",
+    "matchNames": ["line following robot", "line follower robot", "line follower"],
+    "matchKeywords": ["line following", "line follower"],
+    "displayName": "Line Following Robot",
+    "description": "Autonomous robot that follows a track line using IR sensors and differential motor drive.",
+    "components": [
+      { "id": "arduino-uno", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0.3, "z": 0 } },
+      { "id": "ir-sensor-pair", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0.1, "z": -1.8 } },
+      { "id": "motor-driver-l298n", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0.3, "z": 1 } },
+      { "id": "dc-motor", "quantity": 2, "recommended": true, "layout": { "x": -1.6, "y": 0.2, "z": 0.4 } },
+      { "id": "chassis-kit", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0, "z": 0 } },
+      { "id": "battery-18650", "quantity": 1, "recommended": true, "layout": { "x": 1.8, "y": 0.3, "z": 0.6 } },
+      { "id": "jumper-wires", "quantity": 1, "recommended": true, "layout": { "x": -2.6, "y": 0, "z": 2 } }
+    ],
+    "connections": [
+      { "from": "ir-sensor-pair", "fromPin": "OUT1", "to": "arduino-uno", "toPin": "A0" },
+      { "from": "arduino-uno", "fromPin": "D2", "to": "motor-driver-l298n", "toPin": "IN1" },
+      { "from": "motor-driver-l298n", "fromPin": "OUT1", "to": "dc-motor", "toPin": "+" },
+      { "from": "battery-18650", "fromPin": "+", "to": "motor-driver-l298n", "toPin": "12V" }
+    ]
+  },
+  {
+    "key": "solar-power-monitoring",
+    "matchNames": ["solar power monitoring", "solar monitoring system", "solar power monitoring system"],
+    "matchKeywords": ["solar power", "solar monitoring", "solar energy"],
+    "displayName": "Solar Power Monitoring",
+    "description": "Monitors solar panel voltage/current output and logs energy generation data.",
+    "components": [
+      { "id": "esp32-devkit", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0, "z": 0 } },
+      { "id": "solar-panel", "quantity": 1, "recommended": true, "layout": { "x": -2.6, "y": 0, "z": -1.2 } },
+      { "id": "voltage-regulator", "quantity": 1, "recommended": true, "layout": { "x": -1, "y": 0, "z": -1.6 } },
+      { "id": "battery-18650", "quantity": 1, "recommended": true, "layout": { "x": 2.4, "y": 0, "z": -1 } },
+      { "id": "oled-display", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0, "z": -2.4 } },
+      { "id": "breadboard", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": -0.05, "z": 1.6 } },
+      { "id": "jumper-wires", "quantity": 1, "recommended": true, "layout": { "x": -3, "y": 0, "z": 2 } }
+    ],
+    "connections": [
+      { "from": "solar-panel", "fromPin": "+", "to": "voltage-regulator", "toPin": "IN+" },
+      { "from": "voltage-regulator", "fromPin": "OUT+", "to": "battery-18650", "toPin": "+" },
+      { "from": "voltage-regulator", "fromPin": "OUT+", "to": "esp32-devkit", "toPin": "3V3" },
+      { "from": "esp32-devkit", "fromPin": "GPIO21", "to": "oled-display", "toPin": "SDA" }
+    ]
+  },
+  {
+    "key": "iot-security-system",
+    "matchNames": ["iot security system", "security system", "smart security system"],
+    "matchKeywords": ["security", "surveillance", "intruder"],
+    "displayName": "IoT Security System",
+    "description": "Detects motion/intrusion and alerts the user, optionally capturing images and sounding an alarm.",
+    "components": [
+      { "id": "esp32-devkit", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0, "z": 0 } },
+      { "id": "pir-motion-sensor", "quantity": 1, "recommended": true, "layout": { "x": -2.2, "y": 0, "z": -1.4 } },
+      { "id": "buzzer", "quantity": 1, "recommended": true, "layout": { "x": 2, "y": 0, "z": -1.2 } },
+      { "id": "camera-module", "quantity": 1, "recommended": false, "layout": { "x": 0, "y": 0, "z": -2.4 } },
+      { "id": "rfid-rc522", "quantity": 1, "recommended": false, "layout": { "x": -2.4, "y": 0, "z": 1.4 } },
+      { "id": "led-generic", "quantity": 1, "recommended": true, "layout": { "x": 2.2, "y": 0, "z": 1.2 } },
+      { "id": "breadboard", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": -0.05, "z": 1.6 } },
+      { "id": "jumper-wires", "quantity": 1, "recommended": true, "layout": { "x": -3, "y": 0, "z": 2.4 } }
+    ],
+    "connections": [
+      { "from": "pir-motion-sensor", "fromPin": "OUT", "to": "esp32-devkit", "toPin": "GPIO4" },
+      { "from": "esp32-devkit", "fromPin": "GPIO18", "to": "buzzer", "toPin": "+" },
+      { "from": "esp32-devkit", "fromPin": "GPIO19", "to": "led-generic", "toPin": "ANODE" }
+    ]
+  },
+  {
+    "key": "smart-dustbin",
+    "matchNames": ["smart dustbin", "smart trash can", "smart garbage bin", "automatic dustbin"],
+    "matchKeywords": ["dustbin", "garbage", "trash", "waste bin"],
+    "displayName": "Smart Dustbin",
+    "description": "Automatically opens its lid when someone approaches and can report the fill level.",
+    "components": [
+      { "id": "arduino-uno", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0, "z": 0 } },
+      { "id": "ultrasonic-sensor", "quantity": 1, "recommended": true, "layout": { "x": -2, "y": 0.4, "z": -1.4 } },
+      { "id": "servo-sg90", "quantity": 1, "recommended": true, "layout": { "x": 2, "y": 0.2, "z": -1.2 } },
+      { "id": "load-cell-hx711", "quantity": 1, "recommended": false, "layout": { "x": 0, "y": -0.1, "z": 1.8 } },
+      { "id": "led-generic", "quantity": 1, "recommended": false, "layout": { "x": 2.4, "y": 0, "z": 1.4 } },
+      { "id": "breadboard", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": -0.05, "z": 1.6 } },
+      { "id": "battery-18650", "quantity": 1, "recommended": true, "layout": { "x": -2.6, "y": 0, "z": 1.6 } },
+      { "id": "jumper-wires", "quantity": 1, "recommended": true, "layout": { "x": -3, "y": 0, "z": 2.4 } }
+    ],
+    "connections": [
+      { "from": "ultrasonic-sensor", "fromPin": "TRIG", "to": "arduino-uno", "toPin": "D2" },
+      { "from": "ultrasonic-sensor", "fromPin": "ECHO", "to": "arduino-uno", "toPin": "D3" },
+      { "from": "arduino-uno", "fromPin": "D2", "to": "servo-sg90", "toPin": "PWM" }
+    ]
+  },
+  {
+    "key": "robotic-arm",
+    "matchNames": ["robotic arm", "robot arm", "robotic arm control"],
+    "matchKeywords": ["robotic arm", "robot arm", "gripper arm"],
+    "displayName": "Robotic Arm",
+    "description": "Multi-joint robotic arm controlled by several servo motors, useful for pick-and-place tasks.",
+    "components": [
+      { "id": "arduino-uno", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0, "z": 1.8 } },
+      { "id": "servo-sg90", "quantity": 4, "recommended": true, "layout": { "x": 0, "y": 0.3, "z": -0.6 } },
+      { "id": "robotic-arm-kit", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": 0, "z": -0.8 } },
+      { "id": "power-supply-12v", "quantity": 1, "recommended": true, "layout": { "x": 2.6, "y": 0, "z": 1.8 } },
+      { "id": "push-button", "quantity": 2, "recommended": false, "layout": { "x": -2.6, "y": 0, "z": 1.8 } },
+      { "id": "breadboard", "quantity": 1, "recommended": true, "layout": { "x": 0, "y": -0.05, "z": 2.6 } },
+      { "id": "jumper-wires", "quantity": 1, "recommended": true, "layout": { "x": -3, "y": 0, "z": 2.9 } }
+    ],
+    "connections": [
+      { "from": "arduino-uno", "fromPin": "D2", "to": "servo-sg90", "toPin": "PWM" },
+      { "from": "power-supply-12v", "fromPin": "+", "to": "servo-sg90", "toPin": "VCC" }
+    ]
+  }
+]
