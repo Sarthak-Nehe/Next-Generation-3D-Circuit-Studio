@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Next-Generation 3D Circuit Studio | Interactive Hardware Prototyping</title>
+  
+  <!-- SEO & Meta Tags -->
+  <meta name="description" content="Next-Generation 3D Circuit Studio - Analyze any electronics project, customize equipment specifications, and design realistic 3D breadboard circuits with interactive wire routing.">
+  <meta name="theme-color" content="#070a12">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js & OrbitControls Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="frontend/css/styles.css">
+</head>
+<body>
+
+  <!-- ================= HEADER NAVIGATION & STEPPER ================= -->
+  <header class="app-header">
+    <div class="brand-container" onclick="window.UI.switchView('landing')">
+      <div class="brand-logo">
+        <i data-lucide="cpu"></i>
+      </div>
+      <div class="brand-title">Next-Generation 3D Circuit Studio</div>
+      <span class="brand-badge">PRO v2.4</span>
+    </div>
+
+    <div class="stepper-nav">
+      <div class="step-item active" id="step-1" onclick="window.UI.switchView('landing')">
+        <span class="step-num">1</span>
+        <span>Project Input</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-item" id="step-2" onclick="if(window.UI.currentProjectData) window.UI.switchView('selection')">
+        <span class="step-num">2</span>
+        <span>Equipment Selection</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-item" id="step-3" onclick="if(window.UI.currentProjectData) window.AppController.launch3DWorkshop()">
+        <span class="step-num">3</span>
+        <span>3D Workshop</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-header" onclick="window.UI.openRealCircuitModal()">
+        <i data-lucide="camera"></i>
+        <span>Real Circuit Reference</span>
+      </button>
+      <button class="btn-header" onclick="window.AppController.saveCurrentProject()">
+        <i data-lucide="save"></i>
+        <span>Save</span>
+      </button>
+      <button class="btn-header primary" onclick="if(window.UI.currentView !== 'workshop' && window.UI.currentProjectData) window.AppController.launch3DWorkshop()">
+        <i data-lucide="box"></i>
+        <span>3D Studio</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= VIEW 1: LANDING & PROJECT INPUT ================= -->
+  <section class="view-section active" id="landing-view">
+    <div class="landing-container">
+      <div class="hero-pill">
+        <i data-lucide="sparkles"></i>
+        <span>AI-POWERED ELECTRONICS ANALYSIS & REAL-TIME 3D WORKSHOP</span>
+      </div>
+
+      <h1 class="hero-title">
+        Next-Generation <span>3D Circuit Studio</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Enter ANY electronics idea or project name below. Our intelligent engineering system analyzes requirements, recommends optimal components, and builds an interactive 3D breadboard studio.
+      </p>
+
+      <!-- Glassmorphic Search Bar Card -->
+      <div class="search-box-card">
+        <div class="search-input-wrapper">
+          <i data-lucide="search"></i>
+          <input type="text" id="project-input" class="project-search-input" placeholder="Enter project name (e.g. Smart Irrigation System, Home Automation, Solar Tracker)..." autocomplete="off">
+          <button class="btn-analyze" id="btn-analyze-submit">
+            <span>Analyze Project</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Preset Project Cards Grid -->
+      <div class="preset-chips-section">
+        <div class="preset-title">Popular Electronics Blueprint Presets</div>
+        <div class="preset-grid">
+          
+          <div class="preset-card" data-project="Smart Irrigation System">
+            <div class="preset-icon"><i data-lucide="droplet"></i></div>
+            <div>
+              <div class="preset-name">Smart Irrigation System</div>
+              <div class="preset-tag">ESP32 + Moisture + Relay + Pump</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="Home Automation">
+            <div class="preset-icon"><i data-lucide="home"></i></div>
+            <div>
+              <div class="preset-name">Home Automation</div>
+              <div class="preset-tag">ESP32 + Relay + PIR + LDR</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="Weather Monitoring System">
+            <div class="preset-icon"><i data-lucide="thermometer"></i></div>
+            <div>
+              <div class="preset-name">Weather Monitoring System</div>
+              <div class="preset-tag">ESP32 + DHT11 + LCD1602</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="Line Following Robot">
+            <div class="preset-icon"><i data-lucide="bot"></i></div>
+            <div>
+              <div class="preset-name">Line Following Robot</div>
+              <div class="preset-tag">Arduino Uno + Motors + IR</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="Solar Power Monitoring">
+            <div class="preset-icon"><i data-lucide="sun"></i></div>
+            <div>
+              <div class="preset-name">Solar Power Monitoring</div>
+              <div class="preset-tag">Solar Panel + OLED + LiPo</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="IoT Security System">
+            <div class="preset-icon"><i data-lucide="shield-alert"></i></div>
+            <div>
+              <div class="preset-name">IoT Security System</div>
+              <div class="preset-tag">PIR + Ultrasonic + Buzzer</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="Smart Dustbin">
+            <div class="preset-icon"><i data-lucide="trash-2"></i></div>
+            <div>
+              <div class="preset-name">Smart Dustbin</div>
+              <div class="preset-tag">Ultrasonic + Servo SG90</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="Robotic Arm">
+            <div class="preset-icon"><i data-lucide="armchair"></i></div>
+            <div>
+              <div class="preset-name">Robotic Arm</div>
+              <div class="preset-tag">Arduino Uno + Multi-Servos</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="Antigravity Levitation Rig">
+            <div class="preset-icon"><i data-lucide="aperture" style="color:var(--primary-cyan);"></i></div>
+            <div>
+              <div class="preset-name">Antigravity Levitation Rig</div>
+              <div class="preset-tag">Antigravity Core + Flux Matrix</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="Smart DC Motor Fan Controller">
+            <div class="preset-icon"><i data-lucide="fan" style="color:var(--primary-cyan);"></i></div>
+            <div>
+              <div class="preset-name">Smart Motor Fan Controller</div>
+              <div class="preset-tag">DHT11 + DC Fan + Power Switch</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="Automatic Water Level Controller">
+            <div class="preset-icon"><i data-lucide="droplet" style="color:var(--accent-emerald);"></i></div>
+            <div>
+              <div class="preset-name">Water Level Indicator &amp; Pump</div>
+              <div class="preset-tag">Level Sensor + Pump + Relay</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="RFID Smart Door Access System">
+            <div class="preset-icon"><i data-lucide="key" style="color:var(--accent-amber);"></i></div>
+            <div>
+              <div class="preset-name">RFID Smart Door Lock</div>
+              <div class="preset-tag">Servo Latch + Buzzer Alarm</div>
+            </div>
+          </div>
+
+          <div class="preset-card" data-project="Bluetooth RC Motor Vehicle">
+            <div class="preset-icon"><i data-lucide="car" style="color:var(--accent-purple);"></i></div>
+            <div>
+              <div class="preset-name">Bluetooth RC Motor Car</div>
+              <div class="preset-tag">Dual Motors + Steering Servo</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VIEW 2: EQUIPMENT SELECTION ================= -->
+  <section class="view-section" id="selection-view">
+    <div class="selection-container">
+      
+      <!-- Meta Header Banner -->
+      <div class="selection-header-banner">
+        <div>
+          <div class="project-meta-title">
+            <i data-lucide="cpu" style="color:var(--primary-cyan);"></i>
+            <span id="project-display-title">Smart Irrigation System</span>
+          </div>
+          <div class="project-meta-desc" id="project-display-desc">
+            Automated agricultural IoT setup reading soil moisture and triggering 12V water pump relay.
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <button class="btn-header" onclick="window.UI.openRealCircuitModal()">
+            <i data-lucide="image"></i>
+            <span>Real Circuit Photo</span>
+          </button>
+          <button class="btn-launch-3d" id="btn-launch-workshop">
+            <span>Open 3D Workshop</span>
+            <i data-lucide="box"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Controls Toolbar -->
+      <div class="filter-toolbar">
+        <div class="category-pills" id="category-pills-container">
+          <!-- Rendered dynamically by UI.js -->
+        </div>
+        <input type="text" id="comp-search-filter" class="search-filter-input" placeholder="Search equipment...">
+      </div>
+
+      <!-- Component Cards Grid -->
+      <div class="components-grid" id="components-cards-grid">
+        <!-- Component Cards rendered dynamically -->
+      </div>
+
+    </div>
+
+    <!-- Summary Bottom Bar -->
+    <div class="selection-bottom-bar">
+      <div class="summary-stats">
+        <div class="stat-item">
+          <span class="stat-label">Total Equipment Selected</span>
+          <span class="stat-val" id="summary-total-count">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Unique Component Categories</span>
+          <span class="stat-val" id="summary-types-count">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">3D Breadboard Allocation</span>
+          <span class="stat-val" style="color:var(--accent-emerald);">Optimal</span>
+        </div>
+      </div>
+
+      <button class="btn-launch-3d" onclick="window.AppController.launch3DWorkshop()">
+        <span>Launch 3D Studio & Wire Component</span>
+        <i data-lucide="arrow-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= VIEW 3: 3D WORKSHOP (CIRKIT DESIGNER REPLICA STUDIO) ================= -->
+  <section class="view-section" id="workshop-view">
+    
+    <!-- Top Stepper Workflow Bar (Build -> Simulate -> Deploy) -->
+    <div class="cirkit-workflow-header">
+      <div class="cirkit-workflow-step active">
+        <span>Build</span>
+      </div>
+      <i data-lucide="chevron-right" class="cirkit-step-arrow"></i>
+      <div class="cirkit-workflow-step active">
+        <span>Simulate</span>
+      </div>
+      <i data-lucide="chevron-right" class="cirkit-step-arrow"></i>
+      <div class="cirkit-workflow-step">
+        <span>Deploy</span>
+      </div>
+    </div>
+
+    <div class="cirkit-studio-layout">
+      
+      <!-- LEFT SIDEBAR: COMPONENTS PALETTE -->
+      <aside class="cirkit-left-sidebar" id="components-sidebar">
+        <div class="sidebar-header">
+          <span class="sidebar-title">Components</span>
+          <span class="sidebar-badge">57</span>
+        </div>
+
+        <div class="sidebar-search-box">
+          <i data-lucide="search"></i>
+          <input type="text" id="palette-search-input" placeholder="Search components..." oninput="window.UI.filterPaletteComponents(this.value)">
+        </div>
+
+        <div class="palette-categories-list">
+          
+          <!-- Category 1: MICROCONTROLLERS -->
+          <div class="palette-category active">
+            <div class="cat-header" onclick="window.UI.togglePaletteCat(this)">
+              <span>MICROCONTROLLERS</span>
+              <span class="cat-count">5</span>
+              <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="cat-items-grid">
+              <div class="palette-item-card" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'arduino-uno')" onclick="window.UI.spawnComponentFromPalette('arduino-uno')">
+                <img src="https://img.icons8.com/color/48/arduino.png" alt="Arduino Uno">
+                <span>Arduino Uno</span>
+              </div>
+              <div class="palette-item-card" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'arduino-uno')" onclick="window.UI.spawnComponentFromPalette('arduino-uno')">
+                <img src="https://img.icons8.com/color/48/arduino.png" alt="Arduino Mega">
+                <span>Arduino Mega 2560</span>
+              </div>
+              <div class="palette-item-card" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'arduino-uno')" onclick="window.UI.spawnComponentFromPalette('arduino-uno')">
+                <img src="https://img.icons8.com/color/48/arduino.png" alt="Arduino Nano">
+                <span>Arduino Nano V3</span>
+              </div>
+              <div class="palette-item-card active" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'esp32-dev')" onclick="window.UI.spawnComponentFromPalette('esp32-dev')">
+                <img src="https://img.icons8.com/color/48/processor.png" alt="ESP32">
+                <span>ESP32 NodeMCU-32S</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 2: BREADBOARD -->
+          <div class="palette-category active">
+            <div class="cat-header" onclick="window.UI.togglePaletteCat(this)">
+              <span>BREADBOARD</span>
+              <span class="cat-count">2</span>
+              <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="cat-items-grid">
+              <div class="palette-item-card" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'breadboard-830')" onclick="window.UI.spawnComponentFromPalette('breadboard-830')">
+                <img src="https://img.icons8.com/color/48/circuit.png" alt="Breadboard Half">
+                <span>Breadboard (Half+)</span>
+              </div>
+              <div class="palette-item-card active" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'breadboard-830')" onclick="window.UI.spawnComponentFromPalette('breadboard-830')">
+                <img src="https://img.icons8.com/color/48/circuit.png" alt="Breadboard Full">
+                <span>Breadboard (Full-size)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 3: WIRES -->
+          <div class="palette-category active">
+            <div class="cat-header" onclick="window.UI.togglePaletteCat(this)">
+              <span>WIRES</span>
+              <span class="cat-count">1</span>
+              <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="cat-items-grid">
+              <div class="palette-item-card" onclick="window.ThreeInteractions.toggleWiringMode()">
+                <img src="https://img.icons8.com/color/48/wire.png" alt="Wire">
+                <span>Wire</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 4: SENSORS -->
+          <div class="palette-category active">
+            <div class="cat-header" onclick="window.UI.togglePaletteCat(this)">
+              <span>SENSORS</span>
+              <span class="cat-count">4</span>
+              <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="cat-items-grid">
+              <div class="palette-item-card active" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'soil-moisture')" onclick="window.UI.spawnComponentFromPalette('soil-moisture')">
+                <img src="https://img.icons8.com/color/48/hygrometer.png" alt="Soil Moisture">
+                <span>Soil Moisture Probe</span>
+              </div>
+              <div class="palette-item-card" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'ultrasonic-hcsr04')" onclick="window.UI.spawnComponentFromPalette('ultrasonic-hcsr04')">
+                <img src="https://img.icons8.com/color/48/radar.png" alt="Ultrasonic">
+                <span>Ultrasonic HC-SR04</span>
+              </div>
+              <div class="palette-item-card" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'oled-096-i2c')" onclick="window.UI.spawnComponentFromPalette('oled-096-i2c')">
+                <img src="https://img.icons8.com/color/48/monitor.png" alt="TFT Screen">
+                <span>1.8" Color TFT Screen</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 5: ANTIGRAVITY & PHYSICS -->
+          <div class="palette-category active">
+            <div class="cat-header" onclick="window.UI.togglePaletteCat(this)">
+              <span style="color:var(--primary-cyan);">ANTIGRAVITY & PHYSICS</span>
+              <span class="cat-count">3</span>
+              <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="cat-items-grid">
+              <div class="palette-item-card active" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'antigravity-core')" onclick="window.UI.spawnComponentFromPalette('antigravity-core')">
+                <img src="https://img.icons8.com/color/48/atom.png" alt="Antigravity Core">
+                <span>Antigravity Core</span>
+              </div>
+              <div class="palette-item-card" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'flux-stabilizer')" onclick="window.UI.spawnComponentFromPalette('flux-stabilizer')">
+                <img src="https://img.icons8.com/color/48/shield.png" alt="Flux Stabilizer">
+                <span>Flux Stabilizer</span>
+              </div>
+              <div class="palette-item-card" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'quantum-levitator')" onclick="window.UI.spawnComponentFromPalette('quantum-levitator')">
+                <img src="https://img.icons8.com/color/48/magnet.png" alt="Quantum Levitator">
+                <span>Quantum Levitator</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 6: POWER & SWITCHES -->
+          <div class="palette-category active">
+            <div class="cat-header" onclick="window.UI.togglePaletteCat(this)">
+              <span style="color:var(--accent-amber);">POWER &amp; SWITCHES</span>
+              <span class="cat-count">3</span>
+              <i data-lucide="chevron-down"></i>
+            </div>
+            <div class="cat-items-grid">
+              <div class="palette-item-card active" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'lipo-battery-pack')" onclick="window.UI.spawnComponentFromPalette('lipo-battery-pack')">
+                <img src="https://img.icons8.com/color/48/battery.png" alt="LiPo Battery">
+                <span>7.4V LiPo Battery</span>
+              </div>
+              <div class="palette-item-card" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'toggle-switch-spst')" onclick="window.UI.spawnComponentFromPalette('toggle-switch-spst')">
+                <img src="https://img.icons8.com/color/48/toggle-on.png" alt="ON/OFF Switch">
+                <span>ON/OFF SPST Switch</span>
+              </div>
+              <div class="palette-item-card" draggable="true" ondragstart="window.UI.handlePaletteDragStart(event, 'solar-panel-5v')" onclick="window.UI.spawnComponentFromPalette('solar-panel-5v')">
+                <img src="https://img.icons8.com/color/48/solar-panel.png" alt="Solar Panel">
+                <span>5V Solar Panel</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- CENTER 3D CANVAS WORKSPACE -->
+      <main class="cirkit-center-canvas" ondragover="event.preventDefault(); event.dataTransfer.dropEffect = 'copy';" ondrop="window.UI.handleCanvasDrop(event)">
+        
+        <!-- Floating Antigravity Efficiency & Physics Metrics HUD -->
+        <div class="antigravity-hud-bar" id="antigravity-metrics-hud">
+          <div class="hud-item">
+            <i data-lucide="shield-check" style="color:var(--accent-emerald);"></i>
+            <span>Shortest Path:</span>
+            <strong id="hud-path-eff" style="color:var(--accent-emerald);">98.4%</strong>
+          </div>
+          <div class="hud-item">
+            <i data-lucide="check-circle-2" style="color:var(--primary-cyan);"></i>
+            <span>Collision Free:</span>
+            <strong id="hud-collision-status" style="color:var(--primary-cyan);">100% CLEAN</strong>
+          </div>
+          <div class="hud-item">
+            <i data-lucide="radio" style="color:var(--accent-amber);"></i>
+            <span>Interference:</span>
+            <strong id="hud-interference-val" style="color:var(--accent-amber);">&lt;0.02 dB</strong>
+          </div>
+          <div class="hud-item">
+            <i data-lucide="zap" style="color:var(--accent-purple);"></i>
+            <span>Levitation Balance:</span>
+            <strong id="hud-levitation-balance" style="color:var(--accent-purple);">99.8%</strong>
+          </div>
+        </div>
+
+        <div id="three-canvas-container" ondragover="event.preventDefault(); event.dataTransfer.dropEffect = 'copy';" ondrop="window.UI.handleCanvasDrop(event)"></div>
+
+        <!-- Floating Bottom Canvas Toolbar (Cirkit Designer Style) -->
+        <div class="cirkit-floating-toolbar" id="floating-canvas-bar">
+          <button class="cirkit-tb-btn" title="Undo" onclick="window.UI.showToast('Undo')"><i data-lucide="undo-2"></i></button>
+          <button class="cirkit-tb-btn" title="Redo" onclick="window.UI.showToast('Redo')"><i data-lucide="redo-2"></i></button>
+          <div class="cirkit-tb-divider"></div>
+          <button class="cirkit-tb-btn" title="Zoom Out" onclick="window.ThreeApp.zoomCamera(-2)"><i data-lucide="zoom-out"></i></button>
+          <span class="cirkit-zoom-badge" id="zoom-level-val">98%</span>
+          <button class="cirkit-tb-btn" title="Zoom In" onclick="window.ThreeApp.zoomCamera(2)"><i data-lucide="zoom-in"></i></button>
+          <div class="cirkit-tb-divider"></div>
+          <button class="cirkit-tb-btn" title="Fit to View" onclick="window.ThreeApp.fitCameraToScene()"><i data-lucide="maximize-2"></i></button>
+          <button class="cirkit-tb-btn" title="Rotate CCW" onclick="window.ThreeInteractions.rotateSelectedComponent(-45)"><i data-lucide="rotate-ccw"></i></button>
+          <button class="cirkit-tb-btn" title="Rotate CW" onclick="window.ThreeInteractions.rotateSelectedComponent(45)"><i data-lucide="rotate-cw"></i></button>
+          <button class="cirkit-tb-btn active" title="Toggle 3D PCB / Breadboard View" onclick="window.ThreeApp.toggleWorkspaceMode()"><i data-lucide="layers"></i> PCB Mode</button>
+          <button class="cirkit-tb-btn" title="Reload Canvas" onclick="window.ThreeApp.reloadCanvas()"><i data-lucide="refresh-cw"></i></button>
+          <div class="cirkit-tb-divider"></div>
+          <div class="cirkit-toggle-group">
+            <span class="toggle-label">Labels</span>
+            <label class="switch">
+              <input type="checkbox" id="toggle-labels-chk" checked onchange="window.ThreeApp.togglePinLabels(this.checked)">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      </main>
+
+      <!-- RIGHT SIDEBAR: COMPONENT INSPECTOR & SIMULATION -->
+      <aside class="cirkit-right-sidebar" id="inspector-sidebar">
+        
+        <!-- Component Header Banner Card -->
+        <div class="inspector-card-header">
+          <div class="comp-tag-badge">
+            <i data-lucide="pen-tool"></i>
+            <span class="tag-type">SENSOR</span>
+            <span class="comp-id-title" id="inspector-title">capacitive-soil-moisture-v1.2</span>
+          </div>
+        </div>
+
+        <!-- Section 1: SIMULATION Controls -->
+        <div class="inspector-section">
+          <div class="section-heading">SIMULATION</div>
+          <div class="sim-control-row">
+            <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:4px;">
+              <span class="sim-label">Moisture</span>
+              <span class="sim-value-badge" id="sim-moisture-val">96%</span>
+            </div>
+            <input type="range" id="sim-moisture-slider" min="0" max="100" value="96" class="cirkit-range-slider" oninput="window.UI.handleMoistureSliderChange(this.value)">
+            <div style="display:flex; justify-content:space-between; width:100%; font-size:0.68rem; color:#94a3b8; margin-top:2px;">
+              <span>Dry</span>
+              <span style="font-weight:700;">Wet</span>
+            </div>
+          </div>
+
+          <div class="sim-readout-row">
+            <span class="sim-label">ADC Voltage</span>
+            <span class="sim-readout-val" id="sim-adc-val">1.27 V</span>
+          </div>
+        </div>
+
+        <!-- Section 2: PHYSICAL -->
+        <div class="inspector-section">
+          <div class="section-heading">PHYSICAL</div>
+          <div class="physical-row">
+            <span class="sim-label">Size</span>
+            <span class="physical-val">23 × 9.5 × 98 mm</span>
+          </div>
+          <div class="physical-row">
+            <span class="sim-label">Rotation</span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-phys-rot" onclick="window.ThreeInteractions.rotateSelectedComponent(-45)"><i data-lucide="rotate-ccw"></i></button>
+              <button class="btn-phys-rot" onclick="window.ThreeInteractions.rotateSelectedComponent(45)"><i data-lucide="rotate-cw"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: PINS Table -->
+        <div class="inspector-section">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div class="section-heading" style="margin-bottom:0;">PINS</div>
+            <span style="font-size:0.72rem; color:#94a3b8;">3/3 ∨</span>
+          </div>
+
+          <table class="pins-inspector-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>CONN</th>
+                <th>STATE</th>
+                <th>NET</th>
+              </tr>
+            </thead>
+            <tbody id="pins-table-body">
+              <tr>
+                <td class="pin-id-cell">GND</td>
+                <td><span class="conn-arrow">→</span> rail_top_negative_3 (bb_1)</td>
+                <td>--</td>
+                <td class="net-cell">net_GND</td>
+              </tr>
+              <tr>
+                <td class="pin-id-cell">VCC</td>
+                <td><span class="conn-arrow">→</span> rail_top_positive_4 (bb_1)</td>
+                <td>--</td>
+                <td class="net-cell">net_3V3</td>
+              </tr>
+              <tr>
+                <td class="pin-id-cell">AOUT</td>
+                <td><span class="conn-arrow">→</span> 13a (bb_1)</td>
+                <td>--</td>
+                <td class="net-cell">net_13</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- BOTTOM PANEL: SERIAL MONITOR -->
+    <div class="cirkit-serial-monitor-panel" id="serial-monitor-panel">
+      <div class="serial-monitor-header">
+        <div class="sm-title-group" onclick="window.UI.toggleSerialMonitor()">
+          <i data-lucide="chevron-down" id="sm-toggle-icon"></i>
+          <span class="sm-title">SERIAL MONITOR</span>
+          <span class="sm-status-dot"></span>
+        </div>
+
+        <div class="sm-controls-group">
+          <label class="sm-checkbox">
+            <input type="checkbox" id="sm-autoscroll-chk" checked>
+            <span>Autoscroll</span>
+          </label>
+          <button class="btn-sm-clear" onclick="window.UI.clearSerialMonitor()"><i data-lucide="trash-2"></i> Clear</button>
+        </div>
+      </div>
+
+      <div class="serial-monitor-console" id="serial-monitor-console">
+        <!-- Live streaming text logs rendered dynamically -->
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ================= TECHNICAL SPECS MODAL ================= -->
+  <div class="modal-backdrop" id="specs-modal">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div class="modal-title" id="modal-specs-title">Technical Specifications</div>
+        <button style="background:transparent; border:none; color:var(--text-dim); cursor:pointer; font-size:1.2rem;" onclick="window.UI.closeSpecsModal()">✕</button>
+      </div>
+      <div id="modal-specs-body"></div>
+    </div>
+  </div>
+
+  <!-- ================= REAL CIRCUIT REFERENCE MODAL ================= -->
+  <div class="modal-backdrop" id="real-circuit-modal">
+    <div class="modal-box" style="max-width: 900px; padding: 24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div class="modal-title" id="real-circuit-modal-title">Real Hardware Circuit Prototype Reference</div>
+        <button style="background:transparent; border:none; color:var(--text-dim); cursor:pointer; font-size:1.2rem;" onclick="window.UI.closeRealCircuitModal()">✕</button>
+      </div>
+      <div id="real-circuit-modal-body" style="text-align:center;">
+        <div style="position:relative; width:100%; border-radius:12px; overflow:hidden; border:1px solid var(--border-glass-bright); box-shadow:0 10px 30px rgba(0,0,0,0.5); margin-bottom:16px;">
+          <img id="real-circuit-img" src="frontend/images/smart_irrigation_circuit.jpg" alt="Real Hardware Circuit Prototype" style="width:100%; height:auto; display:block;">
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(7,10,18,0.6); padding:12px 20px; border-radius:10px; border:1px solid var(--border-glass);">
+          <span style="font-size:0.85rem; color:var(--text-muted);" id="real-circuit-caption">Real-world photorealistic hardware breadboard prototype with color-coded jumper wire schematics.</span>
+          <button class="btn-header" onclick="window.UI.toggleRealCircuitImage()">Switch Reference Image 🔄</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Application Scripts -->
+  <script src="frontend/js/analyzerService.js"></script>
+  <script src="frontend/js/api.js"></script>
+  <script src="frontend/js/presetLayouts.js"></script>
+  <script src="frontend/js/threeComponents.js"></script>
+  <script src="frontend/js/threeWires.js"></script>
+  <script src="frontend/js/threeInteractions.js"></script>
+  <script src="frontend/js/threeApp.js"></script>
+  <script src="frontend/js/ui.js"></script>
+  <script src="frontend/js/app.js"></script>
+
+</body>
+</html>
